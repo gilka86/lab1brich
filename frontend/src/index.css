@@ -1,0 +1,25 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  font-family:
+    Inter, Arial, Helvetica, sans-serif;
+  color: #172033;
+  background:
+    radial-gradient(circle at top left, #e0e7ff, transparent 32%),
+    #f8fafc;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
