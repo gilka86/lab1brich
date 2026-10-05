@@ -1,0 +1,48 @@
+import type { Note } from '../types/note'
+export const notes: Note[] = [
+  {
+    id: 'n1',
+    title: 'Подготовиться к лабораторной',
+    description: 'Повторить React Router и TypeScript перед занятием.',
+    status: 'active',
+    createdDate: '2026-10-05',
+    priority: 'high',
+    category: 'Учёба',
+  },
+  {
+    id: 'n2',
+    title: 'Купить продукты',
+    description: 'Купить продукты после работы.',
+    status: 'completed',
+    createdDate: '2026-10-04',
+    priority: 'medium',
+    category: 'Личное',
+  },
+  {
+    id: 'n3',
+    title: 'Повторить английский',
+    description: 'Повторить новые английские слова.',
+    status: 'active',
+    createdDate: '2026-10-03',
+    priority: 'medium',
+    category: 'Учёба',
+  },
+  {
+    id: 'n4',
+    title: 'Записаться на тренировку',
+    description: 'Выбрать подходящее время для тренировки.',
+    status: 'archived',
+    createdDate: '2026-10-02',
+    priority: 'low',
+    category: 'Спорт',
+  },
+  {
+    id: 'n5',
+    title: 'Закончить проект',
+    description: 'Проверить проект и подготовить его к сдаче.',
+    status: 'active',
+    createdDate: '2026-10-01',
+    priority: 'high',
+    category: 'Учёба',
+  },
+]

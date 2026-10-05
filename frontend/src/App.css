@@ -1,22 +1,174 @@
 .app {
-  max-width: 960px;
+  max-width: 1050px;
   margin: 0 auto;
-  padding: 32px 20px;
+  padding: 32px 24px 60px;
 }
 
-.app h1 {
-  color: #2856a3;
-  font-size: 32px;
+/* ===== ШАПКА ===== */
+
+header {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 20px 24px;
+  margin-bottom: 36px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
 }
 
-.app section {
-  margin-top: 32px;
-  padding: 20px;
-  background: #f5f7fa;
-  border: 1px solid #dce1e8;
+.app-title {
+  margin: 0 0 16px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #111827;
+}
+
+nav {
+  display: flex;
+  gap: 10px;
+}
+
+nav a {
+  padding: 9px 14px;
   border-radius: 8px;
+  color: #4b5563;
+  text-decoration: none;
+  font-weight: 500;
+  transition: 0.2s;
 }
 
-.app h2 {
+nav a:hover {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+nav a.active {
+  background: #2563eb;
+  color: white;
+}
+
+/* ===== СТРАНИЦЫ ===== */
+
+section {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 28px;
+  border: 1px solid #e5e7eb;
+}
+
+section h1 {
   margin-top: 0;
+  margin-bottom: 10px;
+  color: #111827;
+  font-size: 30px;
+}
+
+section > p {
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+/* ===== СПИСОК ЗАМЕТОК ===== */
+
+.note-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+  margin-top: 26px;
+}
+
+/* ===== КАРТОЧКА ===== */
+
+.note-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s,
+    border-color 0.2s;
+}
+
+.note-card:hover {
+  transform: translateY(-3px);
+  border-color: #bfdbfe;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.note-card h2 {
+  margin: 0 0 12px;
+  font-size: 20px;
+}
+
+.note-card h2 a {
+  color: #1d4ed8;
+  text-decoration: none;
+}
+
+.note-card h2 a:hover {
+  text-decoration: underline;
+}
+
+.note-card p {
+  margin: 8px 0;
+  color: #4b5563;
+  line-height: 1.5;
+}
+
+/* ===== ОБЫЧНЫЕ ССЫЛКИ ===== */
+
+section > a {
+  display: inline-block;
+  margin-top: 18px;
+  padding: 10px 16px;
+
+  background: #2563eb;
+  color: white;
+
+  text-decoration: none;
+  font-weight: 500;
+
+  border-radius: 8px;
+
+  transition:
+    background 0.2s,
+    transform 0.2s;
+}
+
+section > a:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+/* ===== АДАПТИВНОСТЬ ===== */
+
+@media (max-width: 700px) {
+  .app {
+    padding: 16px;
+  }
+
+  header {
+    padding: 18px;
+    margin-bottom: 20px;
+  }
+
+  .app-title {
+    font-size: 24px;
+  }
+
+  section {
+    padding: 20px;
+  }
+
+  section h1 {
+    font-size: 26px;
+  }
+
+  .note-list {
+    grid-template-columns: 1fr;
+  }
+
+  nav {
+    flex-wrap: wrap;
+  }
 }
