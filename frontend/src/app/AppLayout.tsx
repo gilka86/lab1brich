@@ -18,6 +18,9 @@ export function AppLayout() {
       </header>
 
       <main>
+        <p>
+    Изменения временные и исчезнут после обновления страницы.
+  </p>
         <Outlet />
       </main>
     </div>

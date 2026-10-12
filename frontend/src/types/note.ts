@@ -11,3 +11,4 @@ export type Note = {
   priority: 'low' | 'medium' | 'high'
   category: string
 }
+export type NoteDraft = Omit<Note, 'id'>
