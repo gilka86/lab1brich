@@ -9,7 +9,7 @@ export const notes: Note[] = [
     time: '17:06',
     createdDate: '2026-10-05',
     priority: 'high',
-    category: 'Учёба',
+    category: 'study',
   },
   {
     id: 'n2',
@@ -20,7 +20,7 @@ export const notes: Note[] = [
     time: '17:06',
     createdDate: '2026-10-04',
     priority: 'medium',
-    category: 'Личное',
+    category: 'personal',
   },
   {
     id: 'n3',
@@ -31,7 +31,7 @@ export const notes: Note[] = [
     time: '17:06',
     createdDate: '2026-10-03',
     priority: 'medium',
-    category: 'Учёба',
+    category: 'study',
   },
   {
     id: 'n4',
@@ -42,7 +42,7 @@ export const notes: Note[] = [
     time: '17:06',
     createdDate: '2026-10-02',
     priority: 'low',
-    category: 'Спорт',
+    category: 'health',
   },
   {
     id: 'n5',
@@ -53,6 +53,6 @@ export const notes: Note[] = [
     time: '17:06',
     createdDate: '2026-10-01',
     priority: 'high',
-    category: 'Учёба',
+    category: 'study',
   },
 ]

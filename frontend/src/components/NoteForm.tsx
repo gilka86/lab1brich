@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import type { NoteDraft, NoteStatus } from '../types/note'
+import { useCategories } from '../hooks/useCategories'
 
 type NoteFormProps = {
   initialValues: NoteDraft
@@ -13,8 +14,16 @@ export function NoteForm(props: NoteFormProps) {
   const [draft, setDraft] = useState<NoteDraft>(() => ({
     ...props.initialValues,
   }))
+const [error, setError] = useState('')
+  const { load, retry } = useCategories()
 
-  const [error, setError] = useState('')
+const categories = load.status === 'success' ? load.data : []
+
+const selectedCategoryExists = categories.some(
+  (category) => category.id === draft.category
+)
+
+const canSave = load.status === 'success' && selectedCategoryExists
 
   
 function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -22,7 +31,10 @@ function handleSubmit(event: FormEvent<HTMLFormElement>) {
 
   const title = draft.title.trim()
   const description = draft.description.trim()
-
+if (!canSave) {
+  setError('Дождитесь справочника и выберите доступную категорию.')
+  return
+}
   if (title.length < 3 || title.length > 100) {
     setError('Название должно содержать от 3 до 100 символов.')
     return
@@ -136,21 +148,77 @@ function handleSubmit(event: FormEvent<HTMLFormElement>) {
         </select>
       </div>
 
-      <div>
-        <label htmlFor="note-category">Категория</label>
-        <input
-          id="note-category"
-          type="text"
-          value={draft.category}
-          onChange={(e) =>
-            setDraft({ ...draft, category: e.target.value })
-          }
-        />
-      </div>
+      
+<div>
+  <label htmlFor="note-category">Категория</label>
+
+  <select
+    id="note-category"
+    value={draft.category}
+    required
+    disabled={load.status !== 'success' || categories.length === 0}
+    onChange={(e) =>
+      setDraft({
+        ...draft,
+        category: e.target.value,
+      })
+    }
+  >
+    <option value="">Выберите категорию</option>
+
+    {draft.category !== '' && !selectedCategoryExists && (
+      <option value={draft.category} disabled>
+        Текущий код: {draft.category} — выберите доступную категорию
+      </option>
+    )}
+
+    {categories.map((category) => (
+      <option key={category.id} value={category.id}>
+        {category.name}
+      </option>
+    ))}
+  </select>
+</div>
+
+
+{load.status === 'loading' && (
+  <p role="status">Загружаем категории…</p>
+)}
+
+{load.status === 'error' && (
+  <div>
+    <p role="alert">{load.message}</p>
+    <button type="button" onClick={retry}>
+      Повторить
+    </button>
+  </div>
+)}
+
+{load.status === 'success' && categories.length === 0 && (
+  <div>
+    <p role="status">
+      Категорий пока нет. Сохранение недоступно.
+    </p>
+    <button type="button" onClick={retry}>
+      Повторить
+    </button>
+  </div>
+)}
+
+{load.status === 'success' &&
+  categories.length > 0 &&
+  draft.category !== '' &&
+  !selectedCategoryExists && (
+    <p role="alert">
+      Выбранная категория недоступна. Выберите другую.
+    </p>
+  )}
 
       {error && <p role="alert">{error}</p>}
 
-      <button type="submit">Сохранить</button>
+      <button type="submit" disabled={!canSave}>
+  Сохранить
+</button>
       <button type="button" onClick={props.onCancel}>
         Отмена
       </button>
