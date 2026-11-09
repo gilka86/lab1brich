@@ -6,7 +6,25 @@ type NoteDetailsPageProps = {
   notes: Note[]
   onDelete: (id: string) => void
 }
+const statusLabels: Record<string, string> = {
+  active: 'Активная',
+  completed: 'Завершённая',
+  archived: 'В архиве',
+}
 
+const priorityLabels: Record<string, string> = {
+  low: 'Низкий',
+  medium: 'Средний',
+  high: 'Высокий',
+}
+
+const categoryLabels: Record<string, string> = {
+  study: 'Учёба',
+  work: 'Работа',
+  home: 'Дом',
+  health: 'Здоровье',
+  personal: 'Личное',
+}
 export function NoteDetailsPage({
   notes,
   onDelete,
@@ -31,9 +49,9 @@ export function NoteDetailsPage({
 
       <p>{note.description}</p>
       <p>Дата создания: {note.createdDate}</p>
-      <p>Статус: {note.status}</p>
-      <p>Приоритет: {note.priority}</p>
-      <p>Категория: {note.category}</p>
+      <p>Статус: {statusLabels[note.status] ?? note.status}</p>
+      <p>Приоритет: {priorityLabels[note.priority] ?? note.priority}</p>
+      <p>Категория: {categoryLabels[note.category] ?? note.category}</p>
 
       <p>
         <Link to={`/notes/${note.id}/edit`}>
