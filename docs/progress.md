@@ -87,3 +87,21 @@
 8. Проверить неизвестный адрес `/unknown`.
 9. Выполнить `npm run build`.
 10. Выполнить `npm run preview`.
+## Лабораторная работа №5
+
+### Схема
+- categories — публичный справочник; PK id (text); связь: notes.category_id → categories.id.
+- notes — личные заметки; PK id (uuid), owner_id → auth.users, category_id → categories.id. Закрыта от клиентских ролей до ЛР 6.
+
+### Порядок применения
+1. В SQL Editor выполнен файл supabase/migrations/202611091001_initial_schema.sql.
+2. Затем выполнен supabase/seed.sql.
+
+### Проверено
+- чтение справочника в форме (запрос к Supabase виден в Network);
+- ошибка (неверное имя таблицы) и повтор без потери черновика;
+- пустое состояние после очистки и восстановление через seed.sql;
+- изменение name через SQL и кнопка «Обновить справочник»;
+- запрет insert в categories и select из notes с publishable key (42501);
+- ошибка настройки при отсутствии .env.local;
+- npm run build и npm run preview.

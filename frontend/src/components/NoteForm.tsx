@@ -194,13 +194,15 @@ if (!canSave) {
   </div>
 )}
 
-{load.status === 'success' && categories.length === 0 && (
+{load.status === 'success' && (
   <div>
-    <p role="status">
-      Категорий пока нет. Сохранение недоступно.
-    </p>
+    {categories.length === 0 && (
+      <p role="status">
+        Категорий пока нет. Сохранение недоступно.
+      </p>
+    )}
     <button type="button" onClick={retry}>
-      Повторить
+      Обновить справочник
     </button>
   </div>
 )}
