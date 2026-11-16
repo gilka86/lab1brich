@@ -1,11 +1,13 @@
 
+import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
 import type { Note } from '../types/note'
 
 type NoteDetailsPageProps = {
   notes: Note[]
-  onDelete: (id: string) => void
+  onDelete: (id: string) => Promise<void>
 }
+
 const statusLabels: Record<string, string> = {
   active: 'Активная',
   completed: 'Завершённая',
@@ -25,6 +27,7 @@ const categoryLabels: Record<string, string> = {
   health: 'Здоровье',
   personal: 'Личное',
 }
+
 export function NoteDetailsPage({
   notes,
   onDelete,
@@ -32,7 +35,36 @@ export function NoteDetailsPage({
   const { id } = useParams()
   const navigate = useNavigate()
 
+  const [pending, setPending] = useState(false)
+  const [error, setError] = useState('')
+
   const note = notes.find((item) => item.id === id)
+
+  async function handleDelete() {
+    if (!note || pending) return
+
+    if (!window.confirm(
+      `Удалить заметку «${note.title}»?`
+    )) {
+      return
+    }
+
+    setPending(true)
+    setError('')
+
+    try {
+      await onDelete(note.id)
+      navigate('/notes', { replace: true })
+    } catch (err: unknown) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'Не удалось удалить заметку.'
+      )
+    } finally {
+      setPending(false)
+    }
+  }
 
   if (!note) {
     return (
@@ -49,9 +81,19 @@ export function NoteDetailsPage({
 
       <p>{note.description}</p>
       <p>Дата создания: {note.createdDate}</p>
-      <p>Статус: {statusLabels[note.status] ?? note.status}</p>
-      <p>Приоритет: {priorityLabels[note.priority] ?? note.priority}</p>
-      <p>Категория: {categoryLabels[note.category] ?? note.category}</p>
+      <p>
+        Статус: {statusLabels[note.status] ?? note.status}
+      </p>
+      <p>
+        Приоритет: {
+          priorityLabels[note.priority] ?? note.priority
+        }
+      </p>
+      <p>
+        Категория: {
+          categoryLabels[note.category] ?? note.category
+        }
+      </p>
 
       <p>
         <Link to={`/notes/${note.id}/edit`}>
@@ -59,16 +101,16 @@ export function NoteDetailsPage({
         </Link>
       </p>
 
+      {error && <p role="alert">{error}</p>}
+
       <button
         type="button"
+        disabled={pending}
         onClick={() => {
-          if (window.confirm(`Удалить заметку «${note.title}»?`)) {
-            onDelete(note.id)
-            navigate('/notes', { replace: true })
-          }
+          void handleDelete()
         }}
       >
-        Удалить
+        {pending ? 'Удаляем…' : 'Удалить'}
       </button>
 
       <p>

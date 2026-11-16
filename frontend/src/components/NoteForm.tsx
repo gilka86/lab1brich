@@ -6,7 +6,7 @@ import { useCategories } from '../hooks/useCategories'
 
 type NoteFormProps = {
   initialValues: NoteDraft
-  onSave: (draft: NoteDraft) => void
+  onSave: (draft: NoteDraft) => Promise<void>
   onCancel: () => void
 }
 
@@ -15,6 +15,8 @@ export function NoteForm(props: NoteFormProps) {
     ...props.initialValues,
   }))
 const [error, setError] = useState('')
+const [submitError, setSubmitError] = useState('')
+const [pending, setPending] = useState(false)
   const { load, retry } = useCategories()
 
 const categories = load.status === 'success' ? load.data : []
@@ -26,17 +28,28 @@ const selectedCategoryExists = categories.some(
 const canSave = load.status === 'success' && selectedCategoryExists
 
   
-function handleSubmit(event: FormEvent<HTMLFormElement>) {
+
+async function handleSubmit(
+  event: FormEvent<HTMLFormElement>
+) {
   event.preventDefault()
+
+  if (pending) return
 
   const title = draft.title.trim()
   const description = draft.description.trim()
-if (!canSave) {
-  setError('Дождитесь справочника и выберите доступную категорию.')
-  return
-}
+
+  if (!canSave) {
+    setError(
+      'Дождитесь справочника и выберите доступную категорию.'
+    )
+    return
+  }
+
   if (title.length < 3 || title.length > 100) {
-    setError('Название должно содержать от 3 до 100 символов.')
+    setError(
+      'Название должно содержать от 3 до 100 символов.'
+    )
     return
   }
 
@@ -45,23 +58,54 @@ if (!canSave) {
     return
   }
 
-  if (draft.status === 'completed' && description.length === 0) {
-    setError('Завершённая заметка должна иметь описание.')
+  if (
+    draft.status === 'completed' &&
+    description.length === 0
+  ) {
+    setError(
+      'Завершённая заметка должна иметь описание.'
+    )
+    return
+  }
+
+  if (
+    draft.rating.trim() !== '' &&
+    !/^[1-5]$/.test(draft.rating.trim())
+  ) {
+    setError('Оценка должна быть числом от 1 до 5.')
     return
   }
 
   setError('')
+  setSubmitError('')
+  setPending(true)
 
-  props.onSave({
-    ...draft,
-    title,
-    description,
-  })
+  try {
+    await props.onSave({
+      ...draft,
+      title,
+      description,
+    })
+  } catch (error: unknown) {
+    setSubmitError(
+      error instanceof Error
+        ? error.message
+        : 'Не удалось сохранить заметку.'
+    )
+  } finally {
+    setPending(false)
+  }
 }
 
 
+
   return (
-    <form onSubmit={handleSubmit} noValidate>
+    <form
+  onSubmit={(event) => {
+    void handleSubmit(event)
+  }}
+  noValidate
+>
       <div>
         <label htmlFor="note-title">Название</label>
         <input
@@ -217,13 +261,22 @@ if (!canSave) {
   )}
 
       {error && <p role="alert">{error}</p>}
-
-      <button type="submit" disabled={!canSave}>
-  Сохранить
+{submitError && (
+  <p role="alert">{submitError}</p>
+)}
+      <button
+  type="submit"
+  disabled={!canSave || pending}
+>
+  {pending ? 'Сохраняем…' : 'Сохранить'}
 </button>
-      <button type="button" onClick={props.onCancel}>
-        Отмена
-      </button>
+      <button
+  type="button"
+  disabled={pending}
+  onClick={props.onCancel}
+>
+  Отмена
+</button>
     </form>
   )
 }

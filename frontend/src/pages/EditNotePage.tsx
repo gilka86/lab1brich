@@ -5,7 +5,10 @@ import type { Note, NoteDraft } from '../types/note'
 
 type EditNotePageProps = {
   notes: Note[]
-  onUpdate: (id: string, draft: NoteDraft) => void
+  onUpdate: (
+    id: string,
+    draft: NoteDraft
+  ) => Promise<void>
 }
 
 export function EditNotePage({
@@ -33,8 +36,8 @@ export function EditNotePage({
     createdDate: note.createdDate,
     priority: note.priority,
     category: note.category,
-     rating: note.rating,
-  time: note.time,
+    rating: note.rating,
+    time: note.time,
   }
 
   return (
@@ -44,11 +47,13 @@ export function EditNotePage({
       <NoteForm
         key={note.id}
         initialValues={initialValues}
-        onSave={(draft) => {
-          onUpdate(note.id, draft)
+        onSave={async (draft) => {
+          await onUpdate(note.id, draft)
           navigate(`/notes/${note.id}`)
         }}
-        onCancel={() => navigate(`/notes/${note.id}`)}
+        onCancel={() =>
+          navigate(`/notes/${note.id}`)
+        }
       />
     </section>
   )

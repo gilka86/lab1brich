@@ -4,7 +4,7 @@ import { NoteForm } from '../components/NoteForm'
 import type { NoteDraft } from '../types/note'
 
 type NewNotePageProps = {
-  onCreate: (draft: NoteDraft) => string
+  onCreate: (draft: NoteDraft) => Promise<string>
 }
 
 const emptyNote: NoteDraft = {
@@ -13,16 +13,18 @@ const emptyNote: NoteDraft = {
   status: 'active',
   createdDate: '',
   priority: 'medium',
-  rating: 'string',
+  rating: '',
   time: '',
   category: '',
 }
 
-export function NewNotePage({ onCreate }: NewNotePageProps) {
+export function NewNotePage({
+  onCreate,
+}: NewNotePageProps) {
   const navigate = useNavigate()
 
-  function handleSave(draft: NoteDraft) {
-    const id = onCreate(draft)
+  async function handleSave(draft: NoteDraft) {
+    const id = await onCreate(draft)
     navigate(`/notes/${id}`)
   }
 

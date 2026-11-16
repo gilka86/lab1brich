@@ -1,6 +1,34 @@
-import { NavLink, Outlet } from 'react-router'
 
-export function AppLayout() {
+import { useState } from 'react'
+import { NavLink, Outlet } from 'react-router'
+import { supabase } from '../lib/supabase'
+
+export function AppLayout({ email }: { email: string }) {
+  const [error, setError] = useState('')
+  const [pending, setPending] = useState(false)
+
+  async function handleSignOut() {
+    setPending(true)
+    setError('')
+
+    try {
+      const { error: authError } =
+        await supabase.auth.signOut({
+          scope: 'local',
+        })
+
+      if (authError) throw authError
+    } catch (err: unknown) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'Не удалось выйти.'
+      )
+    } finally {
+      setPending(false)
+    }
+  }
+
   return (
     <div className="app">
       <header>
@@ -15,12 +43,21 @@ export function AppLayout() {
             Создать
           </NavLink>
         </nav>
+
+        <p>Вы вошли как: {email}</p>
+
+        <button
+          type="button"
+          disabled={pending}
+          onClick={() => { void handleSignOut() }}
+        >
+          Выйти
+        </button>
+
+        {error && <p role="alert">{error}</p>}
       </header>
 
       <main>
-        <p>
-    Изменения временные и исчезнут после обновления страницы.
-  </p>
         <Outlet />
       </main>
     </div>
